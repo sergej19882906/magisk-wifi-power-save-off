@@ -1,0 +1,6 @@
+id=wifi_power_save_off
+name=Wi-Fi Power Save Off
+version=1.0.1
+versionCode=10001
+author=sergej19882906
+description=Disables Wi-Fi power saving and reapplies it after driver restarts.

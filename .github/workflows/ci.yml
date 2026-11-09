@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check shell syntax
+        run: sh -n module/customize.sh module/service.sh module/uninstall.sh
+
+      - name: Build and verify
+        run: |
+          python3 scripts/build.py
+          python3 scripts/verify.py
+
+      - name: Confirm reproducibility
+        run: |
+          first="$(sha256sum dist/magisk-wifi-power-save-off-v*.zip)"
+          rm -rf dist
+          python3 scripts/build.py
+          second="$(sha256sum dist/magisk-wifi-power-save-off-v*.zip)"
+          test "$first" = "$second"
+          python3 scripts/verify.py
+
+      - name: Check whitespace
+        run: git diff --check
